@@ -4,16 +4,16 @@ import './Footer.scss'
 import EazyMartD from '../../assets/EazyMartD.png'
 function Footer() {
   return (
-    <div className='Footer'>
+    <footer className='Footer'>
       <div className='container'>
         <div className='content'>
           <div className='footer-left'>
             <h3 className='title'>Follow us</h3>
             <ul className='follow'>
-              <li className='hover-link'><AiOutlineInstagram /></li>
-              <li className='hover-link'><AiOutlineFacebook /></li>
-              <li className='hover-link'><AiOutlineTwitter /></li>
-              <li className='hover-link'><AiOutlineMail /></li>
+              <li className='hover-link center'><AiOutlineInstagram /></li>
+              <li className='hover-link center'><AiOutlineFacebook /></li>
+              <li className='hover-link center'><AiOutlineTwitter /></li>
+              <li className='hover-link center'><AiOutlineMail /></li>
             </ul>
           </div>
           <div className='footer-right'>
@@ -27,14 +27,14 @@ function Footer() {
             </ul>
           </div>
         </div>
-        <div className='subfooter'>
+        <div className='subfooter center'>
           <div className='credit-card-img'>
             <img src={EazyMartD} alt="" />
           </div>
           <p>Copyright {new Date().getFullYear()} © <strong>EazyMart</strong></p>
         </div>
       </div>
-    </div>
+    </footer>
   )
 }
 

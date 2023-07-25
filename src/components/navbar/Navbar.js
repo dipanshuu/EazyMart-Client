@@ -2,9 +2,11 @@ import React, { useState } from 'react'
 import './Navbar.scss'
 import { Link } from 'react-router-dom'
 import {AiOutlineShoppingCart} from 'react-icons/ai'
+import Cart from '../cart/Cart'
 
 function Navbar() {
-    
+    const [openCart, setOpenCart] = useState(false);
+
   return (
     <>
     <nav className='Navbar'>
@@ -28,14 +30,14 @@ function Navbar() {
                 </Link>
             </div>
             <div className='nav-right'>
-                <div className='nav-cart hover-link'>
+                <div className='nav-cart hover-link' onClick={()=>setOpenCart(!openCart)}>
                 <AiOutlineShoppingCart className='icon'/>
-                <span className='cart-count center'>99</span>
+                <span className='cart-count center'>99+</span>
                 </div>
             </div>
         </div>
     </nav>
-    
+    { openCart && <Cart onClose={()=>setOpenCart(false)}/>}
     </>
   )
 }

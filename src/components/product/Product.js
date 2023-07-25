@@ -1,9 +1,11 @@
 import React from 'react'
 import EazyMartC from "../../assets/EazyMartC.jpg"
 import './Product.scss'
+import { useNavigate } from 'react-router-dom'
 function Product() {
+  const navigate=useNavigate()
   return (
-    <div className='Product'>
+    <div className='Product' onClick={()=>navigate('/products/123')}>
       <div className='product-container'>
         <div className='product-img'>
           <div className='img-container'>
