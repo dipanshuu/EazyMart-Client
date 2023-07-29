@@ -4,18 +4,23 @@ import EazyMartE from "../../assets/EazyMartE.jpg";
 import "./ProductDetail.scss";
 import { axiosClient } from "../../utils/axiosClient";
 import Loader from "../../components/loader/Loader";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart, removeFromCart } from "../../redux/slice/cartSlice";
 
 function ProductDetail() {
 
     const params = useParams();
     const productKey=params.productId;
     const [product,setProduct]=useState(null);
+    const dispatch=useDispatch();
+    const cart=useSelector(state=>state.cartReducer.cart)
+    const quantity=cart.find(item=>item.key===params.productId)?.quantity||0;
     async function fetchData(){
         const productResponse=await axiosClient.get(`/products?filters[key][$eq]=${params.productId}&populate=*`)
         if(productResponse.data.data.length>0){
             setProduct(productResponse.data.data[0])
         }
-        console.log(productResponse.data.data[0])
+        // console.log(productResponse.data.data[0])
     }
     useEffect(()=>{
         setProduct(null);
@@ -43,11 +48,11 @@ fetchData();
                         </p>
                         <div className="cart-options">
                             <div className="quantity-selector">
-                                <span className="btn decrement">-</span>
-                                <span className="quantity">3</span>
-                                <span className="btn increment">+</span>
+                                <span className="btn decrement" onClick={()=>dispatch(removeFromCart(product))}>-</span>
+                                <span className="quantity">{quantity}</span>
+                                <span className="btn increment" onClick={()=>dispatch(addToCart(product))}>+</span>
                             </div>
-                            <button className="btn-primary add-to-cart">
+                            <button className="btn-primary add-to-cart" onClick={()=>dispatch(addToCart(product))}>
                                 Add to Cart
                             </button>
                         </div>

@@ -1,36 +1,48 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import Product from "../../components/product/Product";
-import "./Categories.scss";
+import "./Collection.scss";
+import { useSelector } from "react-redux";
+import { axiosClient } from "../../utils/axiosClient";
 
-function Categories() {
+function Collection() {
     const navigate = useNavigate();
     const params = useParams();
 
     const [categoryId, setCategoryId] = useState('');
+    const categories=useSelector(state=>state.categoryReducer.categories);
+    const [products,setProducts]=useState([]);
+    
+    const sortOptions=[{
+        
+        value:"Price-Low to High",
+        sort:'price'
+    },{
+        
+        value:'Newest First',
+        sort:'createdAt'
+    }]
+    const [sortBy,setSortBy]=useState(sortOptions[0].sort);
 
-    const categoryList = [
-        {
-            id: "comics",
-            value: "Comics",
-        },
-        {
-            id: "tv-shows",
-            value: "TV Shows",
-        },
-        {
-            id: "sports",
-            value: "Sports",
-        },
-    ];
+    async function fetchProducts(){
+        const response= await axiosClient.get(`/products?populate=image&filters[category][key][$eq]=${params.categoryId}&sort=${sortBy}`)
+        setProducts(response.data.data)
+    }
+    
 
     useEffect(() => {
         setCategoryId(params.categoryId);
         //api call 
-    }, [params])
+        fetchProducts()
+    }, [params,sortBy])
 
     function updateCategory(e) {
         navigate(`/category/${e.target.value}`);
+    }
+    function handleSortChange(e){
+        const sortKey=e.target.value;
+        setSortBy(sortKey)
+        
     }
 
     return (
@@ -53,14 +65,9 @@ function Categories() {
                                 className="select-sort-by"
                                 name="sort-by"
                                 id="sort-by"
+                                onChange={handleSortChange}
                             >
-                                <option value="relavance">Relavance</option>
-                                <option value="newest-first">
-                                    Newest First
-                                </option>
-                                <option value="price-lth">
-                                    Price - Low To High
-                                </option>
+                               {sortOptions.map(item=><option key={item.sort} value={item.sort}>{item.value}</option>)}
                             </select>
                         </div>
                     </div>
@@ -69,28 +76,23 @@ function Categories() {
                     <div className="filter-box">
                         <div className="category-filter">
                             <h3>Category</h3>
-                            {categoryList.map((item) => (
+                            {categories.map((item) => (
                                 <div key={item.id} className="filter-radio">
                                     <input
                                         name="category"
                                         type="radio"
-                                        value={item.id}
+                                        value={item.attributes.key}
                                         id={item.id}
                                         onChange={updateCategory}
-                                        checked={item.id === categoryId}
+                                        checked={item.attributes.key === categoryId}
                                     />
-                                    <label htmlFor={item.id}>{item.value}</label>
+                                    <label htmlFor={item.id}>{item.attributes.title}</label>
                                 </div>
                             ))}
                         </div>
                     </div>
                     <div className="products-box">
-                        <Product />
-                        <Product />
-                        <Product />
-                        <Product />
-                        <Product />
-                        <Product />
+{products.map(product=><Product key={product.id} product={product}/>)}
                     </div>
                 </div>
             </div>
@@ -98,4 +100,4 @@ function Categories() {
     );
 }
 
-export default Categories;
+export default Collection;
